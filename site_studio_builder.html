@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Site Studio — конструктор сайтов</title>
+<style>
+:root{--bg:#f3f5f8;--panel:#fff;--ink:#172033;--muted:#697386;--line:#e4e8ef;--accent:#6558e8}
+*{box-sizing:border-box}body{margin:0;font:14px/1.45 Inter,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+.top{height:60px;background:#171a2b;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;gap:12px}
+.brand{font-weight:800;font-size:18px;letter-spacing:.3px}.brand span{color:#a9a1ff}.top-actions{display:flex;gap:8px;align-items:center}
+button{border:0;border-radius:9px;padding:10px 14px;font-weight:650;cursor:pointer;background:#ecebff;color:#4036bb}button.primary{background:var(--accent);color:#fff}button.dark{background:#30344b;color:#fff}button.ghost{background:#f0f2f7;color:#31394c}button:hover{filter:brightness(.97)}
+.app{height:calc(100vh - 60px);display:grid;grid-template-columns:220px minmax(360px,1fr) 250px;gap:14px;padding:14px;min-height:520px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;overflow:auto}
+h3{margin:0 0 12px;font-size:14px}.muted{color:var(--muted);font-size:12px}
+.tool{width:100%;display:flex;align-items:center;gap:10px;text-align:left;margin:7px 0;background:#f6f7fb;color:#273149;border:1px solid #edf0f5}
+.tool b{font-size:18px;width:24px;text-align:center;color:var(--accent)}
+.center{min-width:0;display:flex;flex-direction:column;gap:10px}
+.canvasbar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:2px 4px}
+.canvas-wrap{flex:1;overflow:auto;background:#e9edf4;border-radius:13px;padding:24px;display:flex;justify-content:center;align-items:flex-start}
+#site{width:min(100%,900px);min-height:650px;background:white;box-shadow:0 8px 35px #25304a18;outline:0;transition:width .2s}
+#site>*{position:relative;cursor:pointer}#site>*:hover{outline:2px dashed #8e86ff;outline-offset:-2px}#site>*.selected{outline:3px solid var(--accent);outline-offset:-3px}
+.hero{padding:76px 9%;background:linear-gradient(120deg,#222b4c,#6759d8);color:white;text-align:left}
+.hero h1{font-size:clamp(30px,5vw,52px);line-height:1.08;margin:0 0 16px;max-width:650px}.hero p{font-size:17px;max-width:560px;opacity:.9}
+.section{padding:46px 8%;}.section h2{font-size:30px;margin:0 0 12px}.section p{color:#657086;line-height:1.7}
+.cta{display:inline-block;background:#fff;color:#4338b7;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:700;margin-top:8px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}.card{background:#f4f5fb;padding:20px;border-radius:12px}.card h3{font-size:17px}
+.site-footer{padding:25px 8%;background:#171a2b;color:white}
+.field{display:grid;gap:5px;margin:12px 0}.field label{font-size:12px;color:var(--muted);font-weight:650}.field input,.field textarea,.field select{width:100%;padding:9px;border:1px solid var(--line);border-radius:8px;font:inherit;background:white;color:var(--ink)}
+.field textarea{min-height:75px;resize:vertical}.empty{color:var(--muted);font-size:13px;line-height:1.6;background:#f7f8fb;padding:12px;border-radius:9px}
+.bottom{font-size:11px;color:var(--muted);padding:4px;text-align:center}
+@media(max-width:850px){.app{grid-template-columns:170px minmax(300px,1fr);}.right{grid-column:1/-1;max-height:220px}.top{padding:0 12px}.top-actions button{padding:8px}.cards{grid-template-columns:1fr}}
+@media(max-width:560px){.app{height:auto;grid-template-columns:1fr;padding:8px}.left{order:1}.center{order:2;min-height:600px}.right{order:3}.top{height:auto;min-height:60px;flex-wrap:wrap;padding:10px}.canvas-wrap{padding:10px}}
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="brand">✦ SITE <span>STUDIO</span></div>
+ <div class="top-actions">
+  <button class="dark" id="newBtn">Новый сайт</button>
+  <button class="ghost" id="previewBtn">Предпросмотр</button>
+  <button class="primary" id="downloadBtn">Скачать сайт</button>
+ </div>
+</header>
+<main class="app">
+ <aside class="panel left">
+  <h3>Добавить на страницу</h3>
+  <div class="muted">Нажми на элемент, чтобы добавить его в макет.</div>
+  <button class="tool" data-add="heading"><b>T</b> Заголовок</button>
+  <button class="tool" data-add="text"><b>¶</b> Текстовый блок</button>
+  <button class="tool" data-add="button"><b>▣</b> Кнопка</button>
+  <button class="tool" data-add="image"><b>▧</b> Изображение</button>
+  <button class="tool" data-add="cards"><b>▦</b> Карточки</button>
+  <button class="tool" data-add="spacer"><b>↕</b> Отступ</button>
+  <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+  <h3>Страницы</h3>
+  <button class="tool" id="homePage"><b>⌂</b> Главная</button>
+  <div class="empty">Подсказка: выбери элемент на странице, чтобы изменить его справа. Можно также менять порядок блоков кнопками ↑ и ↓.</div>
+ </aside>
+ <section class="center">
+  <div class="canvasbar"><strong>Рабочая область</strong><select id="device" aria-label="Размер экрана" style="padding:7px;border:1px solid var(--line);border-radius:8px"><option value="desktop">Компьютер</option><option value="tablet">Планшет</option><option value="mobile">Телефон</option></select></div>
+  <div class="canvas-wrap"><div id="site">
+   <section class="hero" data-type="hero"><h1>Создай свой сайт</h1><p>Простой конструктор сайтов прямо на компьютере. Добавляй блоки, меняй текст и скачивай готовую страницу.</p><a class="cta" href="#contact">Начать</a></section>
+   <section class="section" data-type="section"><h2>Добро пожаловать!</h2><p>Это пример твоей страницы. Нажми на любой блок, чтобы отредактировать его.</p><div class="cards"><div class="card"><h3>Быстро</h3><p>Создавай страницы без программирования.</p></div><div class="card"><h3>Просто</h3><p>Управляй элементами в пару нажатий.</p></div><div class="card"><h3>Удобно</h3><p>Скачай сайт и открой его в браузере.</p></div></div></section>
+   <footer class="site-footer" data-type="footer">© 2026 Мой новый сайт</footer>
+  </div></div>
+  <div class="bottom">Site Studio работает в браузере. Интернет для редактирования не нужен.</div>
+ </section>
+ <aside class="panel right">
+  <h3>Настройки элемента</h3>
+  <div id="inspector" class="empty">Выбери блок на странице, чтобы изменить его текст, цвет и размер.</div>
+ </aside>
+</main>
+<script>
+const site=document.getElementById('site'), inspector=document.getElementById('inspector');let selected=null;
+function select(el){if(selected)selected.classList.remove('selected');selected=el;el.classList.add('selected');renderInspector()}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function add(type){
+ let el;
+ if(type==='heading'){el=document.createElement('section');el.className='section';el.innerHTML='<h2>Новый заголовок</h2>'; }
+ if(type==='text'){el=document.createElement('section');el.className='section';el.innerHTML='<p>Напиши здесь свой текст. Расскажи посетителям о своём проекте.</p>';}
+ if(type==='button'){el=document.createElement('section');el.className='section';el.innerHTML='<a class="cta" href="#contact">Нажми сюда</a>'; }
+ if(type==='image'){el=document.createElement('section');el.className='section';el.innerHTML='<div style="padding:45px;background:#eef0f8;text-align:center;border-radius:12px;color:#68718a">Место для изображения — укажи ссылку на картинку справа</div>';el.dataset.image='';}
+ if(type==='cards'){el=document.createElement('section');el.className='section';el.innerHTML='<h2>Наши преимущества</h2><div class="cards"><div class="card"><h3>Первое</h3><p>Описание</p></div><div class="card"><h3>Второе</h3><p>Описание</p></div><div class="card"><h3>Третье</h3><p>Описание</p></div></div>';}
+ if(type==='spacer'){el=document.createElement('div');el.style.height='50px';el.innerHTML='';}
+ el.dataset.type=type;site.insertBefore(el,site.querySelector('.site-footer'));select(el);
+}
+document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>add(b.dataset.add));
+site.addEventListener('click',e=>{const el=e.target.closest('#site>*');if(el){e.preventDefault();select(el)}});
+function getText(el){return el.innerText||''}
+function renderInspector(){
+ if(!selected)return;
+ const text=getText(selected);
+ inspector.className='';
+ inspector.innerHTML=`<div class="field"><label>Текст блока</label><textarea id="editText">${esc(text)}</textarea></div>
+ <div class="field"><label>Цвет фона</label><input type="color" id="bgColor" value="${toHex(getComputedStyle(selected).backgroundColor)}"></div>
+ <div class="field"><label>Цвет текста</label><input type="color" id="textColor" value="${toHex(getComputedStyle(selected).color)}"></div>
+ <div class="field"><label>Размер текста</label><input type="range" id="fontSize" min="12" max="56" value="${parseInt(getComputedStyle(selected).fontSize)||16}"></div>
+ <div class="field"><label>Ссылка (для кнопки или блока)</label><input id="linkValue" placeholder="https://example.com" value="${esc(selected.querySelector('a')?.getAttribute('href')||'')}"></div>
+ <button class="tool" id="upBtn">↑ Переместить выше</button><button class="tool" id="downBtn">↓ Переместить ниже</button>
+ <button class="tool" id="deleteBtn" style="color:#b42336">✕ Удалить блок</button>`;
+ document.getElementById('editText').oninput=e=>{let target=selected.querySelector('h1,h2,h3,p,a')||selected;if(target===selected){selected.textContent=e.target.value}else{target.textContent=e.target.value}};
+ document.getElementById('bgColor').oninput=e=>selected.style.backgroundColor=e.target.value;
+ document.getElementById('textColor').oninput=e=>selected.style.color=e.target.value;
+ document.getElementById('fontSize').oninput=e=>selected.style.fontSize=e.target.value+'px';
+ document.getElementById('linkValue').oninput=e=>{let a=selected.querySelector('a');if(a)a.href=e.target.value};
+ document.getElementById('upBtn').onclick=()=>{if(selected.previousElementSibling){site.insertBefore(selected,selected.previousElementSibling)}};
+ document.getElementById('downBtn').onclick=()=>{if(selected.nextElementSibling){site.insertBefore(selected.nextElementSibling,selected)}};
+ document.getElementById('deleteBtn').onclick=()=>{selected.remove();selected=null;inspector.className='empty';inspector.textContent='Выбери блок на странице, чтобы изменить его.'};
+}
+function toHex(rgb){let m=rgb.match(/\d+/g);if(!m)return '#ffffff';return '#'+m.slice(0,3).map(x=>(+x).toString(16).padStart(2,'0')).join('')}
+document.getElementById('device').onchange=e=>{site.style.width=e.target.value==='mobile'?'375px':e.target.value==='tablet'?'700px':'min(100%,900px)'};
+document.getElementById('newBtn').onclick=()=>{if(confirm('Создать новую пустую страницу? Текущие блоки будут удалены.')){site.innerHTML='<section class="hero"><h1>Мой новый сайт</h1><p>Добавь сюда свой текст.</p></section>';selected=null;inspector.className='empty';inspector.textContent='Выбери блок на странице.'}};
+document.getElementById('homePage').onclick=()=>{site.scrollTo({top:0,behavior:'smooth'});};
+document.getElementById('previewBtn').onclick=()=>{if(selected)selected.classList.remove('selected');selected=null;inspector.className='empty';inspector.textContent='Режим просмотра. Нажми на элемент, чтобы продолжить редактирование.';};
+document.getElementById('downloadBtn').onclick=()=>{
+ const clone=site.cloneNode(true);clone.querySelectorAll('.selected').forEach(x=>x.classList.remove('selected'));
+ const css=`*{box-sizing:border-box}body{margin:0;font:16px Arial,sans-serif;color:#172033} .hero{padding:76px 9%;background:linear-gradient(120deg,#222b4c,#6759d8);color:white}.hero h1{font-size:clamp(30px,5vw,52px);margin:0 0 16px}.hero p{font-size:17px;max-width:560px}.section{padding:46px 8%}.section h2{font-size:30px}.section p{line-height:1.7;color:#657086}.cta{display:inline-block;background:#fff;color:#4338b7;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:8px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}.card{background:#f4f5fb;padding:20px;border-radius:12px}.site-footer{padding:25px 8%;background:#171a2b;color:white}@media(max-width:600px){.cards{grid-template-columns:1fr}}`;
+ const doc='<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Мой сайт</title><style>'+css+'</style></head><body>'+clone.innerHTML+'</body></html>';
+ const blob=new Blob([doc],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='мой-сайт.html';a.click();URL.revokeObjectURL(url);
+};
+</script>
+</body></html>
